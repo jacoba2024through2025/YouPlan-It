@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}You Plan-It{% endblock %}</title>
+    <link rel="stylesheet" href="{% static "styling.css" %}"/>
+
+
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      rel="stylesheet"
+    />
+   
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{% static 'images/youplanit.png' %}"
+    />
+  </head>
+  <body>
+    <h1>Begin Designing The Navbar Here</h1>
+      
+      
+
+    <div class="container-style">
+      {% block content %}
+        
+
+
+        
+        
+        <h2> Home Page Body Content Goes Here</h2>
+        
+        
+      {% endblock %}
+    </div>
+
+    <footer class="footer-style">
+      <div class="footer-container-style">
+          <h3>Footer Content</h3>
+      </div>
+  </footer>
+  </body>
+</html>

@@ -7,12 +7,16 @@ from django.contrib.auth.decorators import login_required
 
 
 def viewHomePage(request):
+    
+
+
     return render(request, 'base.html')
 
 
 def viewLoginPage(request):
     
     if request.user.is_authenticated:
+
         print("You are already logged in")
         return redirect('home')
     else:

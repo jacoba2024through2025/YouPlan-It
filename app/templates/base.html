@@ -29,7 +29,11 @@
         
 
 
-        
+        {% if request.user.is_authenticated %}
+          <p>Welcome back, {{request.user.username}}</p>
+        {% else %}
+          <p>There is not a user logged in</p>
+        {% endif %}
         
         <h2> Home Page Body Content Goes Here</h2>
         

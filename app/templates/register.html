@@ -2,29 +2,38 @@
 
 {% block content %}
 
-<h1>Placeholder Content for the register page</h1>
+
+<div class="form-content">
+    <h1>Sign Up</h1>
 
 
-<form method="POST" action="">
-    {% csrf_token %}
-    
+    <form method="POST" action="">
+        {% csrf_token %}
+        
 
-    {{form.username.label}}
-    {{form.username}}
+        {{form.username.label}}
+        {{form.username}}
 
-    {{form.email.label}}
-    {{form.email}}
+        {{form.email.label}}
+        {{form.email}}
 
-    {{form.password1.label}}
-    {{form.password1}}
+        {{form.password1.label}}
+        {{form.password1}}
 
-    {{form.password2.label}}
-    {{form.password2}}
-    
+        {{form.password2.label}}
+        {{form.password2}}
+        
 
 
-    <input type="submit" name="Create User">
-</form>
+        <input type="submit" name="Create User">
+        <div>
+            Already have an account?
+            <span><a href="{% url 'logout' %}"><i class="fa-solid fa-door-open"></i>Log in to your account</a></span>
+        </div>
+    </form>
+
+</div>
+
 
 
 {% endblock %}

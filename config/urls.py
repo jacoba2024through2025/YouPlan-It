@@ -25,6 +25,9 @@ urlpatterns = [
     path("", views.viewHomePage, name="home"),
     path("register/", views.viewRegistrationPage, name="register"),
     path("login/", views.viewLoginPage, name="login"),
+    path("logout/", views.viewLogout, name="logout"),
+    path("dashboard/<str:username>/", views.viewUserDashboard, name="user_dashboard"),
+    path("profile/<str:username>/", views.viewUserProfile, name="profile"),
     path("admin/", admin.site.urls),
     
     

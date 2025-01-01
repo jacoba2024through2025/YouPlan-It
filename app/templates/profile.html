@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="profile-form-content">
+        <h1 class="profile-heading">Welcome to {{ user.username }}'s Profile</h1>
+
+        <!-- Display the profile image -->
+        <div class="profile-image-container">
+            <img src="{% if profile.image %}{{ profile.image.url }}{% else %}/media/profile_pics/default.jpg{% endif %}" 
+                 alt="{{ user.username }}'s Profile Picture" 
+                 class="profile-image">
+        </div>
+
+        <!-- Profile form -->
+        <form method="POST" enctype="multipart/form-data" class="profile-form">
+            {% csrf_token %}
+            
+            <div class="form-fields">
+                {{ form.as_p }}
+            </div>
+
+            <button type="submit" class="save-button">Save Changes</button>
+        </form>
+    </div>
+{% endblock %}

@@ -20,7 +20,34 @@
     />
   </head>
   <body>
-    <h1>Begin Designing The Navbar Here</h1>
+    <nav>
+        <h1 style="color: yellowgreen">&ensp;You Plan-it</h1>
+      <a href="{% url 'home' %}">Home</a>
+      {% if request.user.is_authenticated %}
+      <span>
+        <a href="{% url 'user_dashboard' username=request.user.username %}">
+          <i class="fa-solid fa-sliders"></i> View Your Dashboard
+        </a>
+      </span>
+      <p class="welcome-message">Welcome back, {{request.user.username}}</p>
+      <a href="{% url 'logout' %}"><i class="fa-solid fa-door-open"></i>Logout</a>
+      
+      
+
+      <span>
+        <a href="{% url 'profile' username=request.user.username %}">
+          <i class="fa-solid fa-user-circle"></i> View Your Profile
+        </a>
+      </span>
+
+
+      
+      
+    {% else %}
+      <p class="welcome-message" style="color: red; text-decoration: underline;">There is not a user logged in</p>
+      <span><a href="{% url 'login' %}"><i class="fa-solid fa-door-open"></i>Sign In</a></span>
+    {% endif %}
+    </nav>
       
       
 
@@ -29,10 +56,13 @@
         
 
 
+       
+
+
         {% if request.user.is_authenticated %}
-          <p>Welcome back, {{request.user.username}}</p>
+          <span><a href="{% url 'logout' %}"><i class="fa-solid fa-door-open"></i>Logout</a></span>
         {% else %}
-          <p>There is not a user logged in</p>
+          <span><a href="{% url 'register' %}"><i class="fa-solid fa-door-open"></i>Sign Up</a></span>
         {% endif %}
         
         <h2> Home Page Body Content Goes Here</h2>
@@ -42,9 +72,7 @@
     </div>
 
     <footer class="footer-style">
-      <div class="footer-container-style">
-          <h3>Footer Content</h3>
-      </div>
+      
   </footer>
   </body>
 </html>

@@ -27,9 +27,24 @@ a {
     text-decoration: none;
     color: lightblue;
 }
+ul {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    margin-left: 1vh;
+}
+li {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    margin-left: 2vh;
+}
 /*Styling for the Home Page*/
 
-
+.profile-image-base {
+    
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #ddd;
+}
 
 
 
@@ -274,6 +289,7 @@ a {
     font-size: 2.5rem;
     margin-bottom: 1.5rem;
     color: #333;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
 .profile-form {
@@ -329,3 +345,115 @@ a {
 
 
 /*End Profile Styling*/
+
+
+/* User Dashboard Styling Start */
+a {
+    text-decoration: none;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+h3, p {
+    
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+header {
+    background-color: red;
+    margin-left: -1vh;
+}
+
+.navbar-nav {
+    margin-top: 80vh;
+}
+
+.nav-list {
+    padding-top: 20vh;
+}
+
+.main-wrap {
+    width: 100%;
+    display: flex;
+}
+
+.main-wrap .main-head {
+    width: 20%;
+    height: 100vh;
+    background: #0a1128;
+    overflow: hidden;
+    transition: .3s ease-in-out;
+    position: absolute;
+}
+
+.main-wrap .main-head .main-nav {
+    width: 100%;
+}
+
+.main-wrap .main-head .main-nav .navbar {
+    width: 100%;
+}
+
+.main-wrap .main-head .main-nav .navbar .navbar-nav .title {
+    padding-top: 25vh;
+    border-bottom: 1px solid yellowgreen;
+    padding-bottom: 15vh;
+}
+
+.main-wrap .main-head .main-nav .navbar .navbar-nav .title h3 {
+    font-size: 25px;
+    font-weight: 500;
+    line-height: 35px;
+    color: #fff;
+    
+}
+
+.main-wrap .main-head .main-nav .navbar .navbar-nav .title h3 .title-text {
+    position: absolute;
+    left: 35px;
+    opacity: 1;
+    transition: .2s ease;
+
+}
+
+.main-wrap .main-head .main-nav .navbar .navbar-nav .nav-list {
+    margin: 0;
+    padding: 10px 10px; 
+}
+
+.main-wrap .main-head .main-nav .navbar .navbar-nav .nav-list .nav-list-item {
+    padding: 15px 10px;
+    list-style: none;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: .2s ease-in-out;
+
+}
+
+.main-wrap .main-head .main-nav .navbar .navbar-nav .nav-list .nav-list-item:hover {
+    background: #2f3e46;
+}
+
+.main-wrap .main-head .main-nav .navbar .navbar-nav .nav-list .nav-list-item .nav-link {
+    display: inline-block;
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: .5px;
+    color: #fff;
+}
+
+.main-wrap {
+    width: 80%;
+}
+.showcase {
+    margin-left: 20%;
+    margin-top: 5%;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+
+}
+
+.dashboard-username {
+    font-size: 5pt;
+}
+
+/* End User Dashboard Styling */

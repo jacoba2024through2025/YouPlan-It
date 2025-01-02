@@ -12,7 +12,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
       rel="stylesheet"
     />
-   
+
     <link
       rel="icon"
       type="image/x-icon"
@@ -20,7 +20,7 @@
     />
   </head>
   <body>
-    <nav>
+    <nav style="z-index:99;">
         <h1 style="color: yellowgreen">&ensp;You Plan-it</h1>
       <a href="{% url 'home' %}">Home</a>
       {% if request.user.is_authenticated %}
@@ -29,35 +29,38 @@
           <i class="fa-solid fa-sliders"></i> View Your Dashboard
         </a>
       </span>
+      <div class="profile-image-container">
+        <img src="{% if profile.image %}{{ profile.image.url }}{% else %}/media/profile_pics/default.jpg{% endif %}" 
+             alt="{{ user.username }}'s Profile Picture" 
+             class="profile-image-base">
+      </div>
       <p class="welcome-message">Welcome back, {{request.user.username}}</p>
       <a href="{% url 'logout' %}"><i class="fa-solid fa-door-open"></i>Logout</a>
-      
-      
+
 
       <span>
+        
         <a href="{% url 'profile' username=request.user.username %}">
           <i class="fa-solid fa-user-circle"></i> View Your Profile
+          
         </a>
       </span>
 
 
-      
-      
+
+
     {% else %}
       <p class="welcome-message" style="color: red; text-decoration: underline;">There is not a user logged in</p>
       <span><a href="{% url 'login' %}"><i class="fa-solid fa-door-open"></i>Sign In</a></span>
     {% endif %}
     </nav>
-      
-      
 
-    <div class="container-style">
+
+
+    <div class="container-style" style="margin: 1vh;">
       {% block content %}
-        
 
-
-       
-
+      
 
         {% if request.user.is_authenticated %}
           <span><a href="{% url 'logout' %}"><i class="fa-solid fa-door-open"></i>Logout</a></span>
@@ -65,9 +68,25 @@
           <span><a href="{% url 'register' %}"><i class="fa-solid fa-door-open"></i>Sign Up</a></span>
         {% endif %}
         
-        <h2> Home Page Body Content Goes Here</h2>
-        
-        
+        <br><br><br><br>
+        <img src="{% static 'images/youplanit.png' %}" alt="Project Logo">
+        <h3>Upcoming Events</h3><br>
+        <ul>
+        {% if events.count != 0 %}
+          {% for e in events %}
+          <li>
+            <strong><a href="{% url 'event_detail' username=e.user.username ename=e.name %}" style="color:black;">{{ e.name }} (Hosted by: {% if e.user == request.user.username %}You{% else %}{{e.user }}{% endif %}, {{ e.start_datetime }} - {{e.end_datetime}})</a></strong><br>
+            <div class="event-image">
+              <img src="{% if e.event_image %}{{ e.event_image }}{% else %}/media/profile_pics/default.jpg{% endif %}" 
+                   alt="/media/profile_pics/default.jpg" 
+                   class="event-image">
+            </div>
+          </li>
+          {% endfor %}
+        {% else %}
+          You have no upcoming events.
+        {% endif %}
+        </ul>
       {% endblock %}
     </div>
 

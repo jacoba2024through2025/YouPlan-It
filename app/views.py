@@ -2,18 +2,33 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 #from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
-from app.forms import CreateUserForm, ProfileImageForm
+from app.forms import *
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from app.models import *
+from django.views import View
 
 
 
 def viewHomePage(request):
+    if request.user.is_authenticated:
+        profile = Profile.objects.get(user=request.user)  
+        context = {
+            'events': Events.events_within_next_14_days(request.user),
+            'user': request.user,
+            'profile': profile
+        }
+    else:
+        context = {
+            'events': 0,
+            'user': 0,
+            'profile': None  
+        }
+
+    return render(request, 'base.html', context)
     
 
 
-    return render(request, 'base.html')
 
 
 def viewLoginPage(request):
@@ -69,15 +84,14 @@ def viewLogout(request):
 
 @login_required
 def viewUserDashboard(request, username):
-    ##grabs the User model and all of its objects
     user = get_object_or_404(User, username=username)
-
-    ##if it cant find the User object, it will return a 404 error
-
-
+    profile = Profile.objects.get(user=user)  
     
-    context = {"user": user}
-
+    context = {
+        'user': user,
+        'events': Events.objects.filter(user=request.user),
+        'profile': profile  
+    }
 
     return render(request, 'userdashboard.html', context)
 
@@ -104,5 +118,64 @@ def viewUserProfile(request, username):
     return render(request, 'profile.html', {
         'form': form,
         'user': user,
-        'profile': profile,  # Pass profile to template for image display
+        'profile': profile,
+        'events':Events.objects.filter(user=request.user)  # Pass profile to template for image display
     })
+@login_required
+def EventPage(request, username):
+    if request.user.is_authenticated:
+        profile = Profile.objects.get(user=request.user)  
+        context = {
+            'events': Events.objects.filter(user=request.user),
+            'user': request.user,
+            'profile': profile  
+        }
+    return render(request, 'eventform1.html', context)
+def SharedEventPage(request, username):
+    if request.user.is_authenticated:
+        profile = Profile.objects.get(user=request.user)  
+        context = {
+            'events': Events.objects.filter(members=request.user).exclude(user=request.user),
+            'user': request.user,
+            'profile': profile  
+        }
+    return render(request, 'eventform2.html', context)
+class EventCreateView(View):
+    def get(self, request, username):
+        form = CreateEventForm()
+        return render(request, 'eventcreation.html', {'form': form})
+
+    def post(self, request, username):
+        form = CreateEventForm(request.POST)
+        if form.is_valid():
+            event = form.save(commit=False)
+            event.user = request.user  # Assuming the user is logged in
+            event.save()
+            event.members.add(request.user)  # Add the creator to the members field
+            return redirect('event_detail', username=event.user.username, event=event.name)
+        return render(request, 'eventcreation.html', {'form': form})
+
+def EventDetail(request, username, ename):
+    event = Events.objects.get(name=ename, user=User.objects.get(username=username))
+    return render(request, 'eventdetails.html', {'event': event})
+
+def InviteUser(request, username):
+    if request.method == 'POST':
+        form = AddMembersToEventForm(request.POST, user=request.user)
+        if form.is_valid():
+            event = form.cleaned_data['event']
+            usernames = form.cleaned_data['usernames']
+            username_list = [username.strip() for username in usernames.split(',')]
+            members = User.objects.filter(username__in=username_list)
+            event.members.add(*members)
+            return redirect('event_detail', username=event.user.username, pk=event.pk)
+    else:
+        form = AddMembersToEventForm(user=request.user)
+    context = {'form': form}
+    return render(request, 'invites.html', context)
+
+@login_required
+
+@login_required
+def ChatRoom(request, username):
+    return render(request, 'chatroom.html')

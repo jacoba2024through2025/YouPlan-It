@@ -22,6 +22,27 @@
             <button type="submit" class="save-button">Save Changes</button>
         </form>
 
-        <p>You are currently hosting 0 events. Create one in your dashboard</p>
+        {% if events.count != 0 %}
+        <div class="your-events">
+            <p>You have {{event.count}} events.</p>
+            <p>Your events:</p>
+                {% for e in events%}
+                    <p>{{e.name}}</p>
+                    <p>{{e.description}}</p>
+                    <p>{{e.event_location}}</p>
+                {% endfor %}
+
+        </div>
+          
+        {% else %}
+        <div class="no-events">
+            <p>You have no events. Create One In Your Dashboard</p>
+            <button>Create An Event</button>
+        
+        </div>
+        
+        
+          
+        {% endif %}
     </div>
 {% endblock %}

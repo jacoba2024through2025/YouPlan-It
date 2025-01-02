@@ -1,0 +1,16 @@
+{% extends 'userdashboard.html' %}
+{% block info %}
+<h3>Your Events</h3><br>
+<ul>
+    {% if events.count != 0 %}
+      {% for e in events %}
+      <li>
+        <strong><a href="{% url 'event_detail' username=e.user.username ename=e.name %}" style="color:black;">{{ e.name }} ({{ e.start_datetime }})</a></strong><br>
+      </li>
+      {% endfor %}
+    {% else %}
+      You have no events.
+    {% endif %}
+</ul>
+<a href="{% url 'event_create' username=user.username %}"><button>Create a new Event</button></a>
+{% endblock %}

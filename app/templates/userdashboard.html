@@ -1,9 +1,78 @@
-{% extends 'base.html'%}
-
+{% extends 'base.html' %}
 {% block content %}
-
-<h1>Welcome to {{ user.username }}'s Dashboard</h1>
-<p>This is the user's dashboard. They can create events and edit their events from here.</p>
-
-
+    {% block sidebar %}
+    <main class="main-wrap">
+        <header class="main-head">
+            <div class="main-nav">
+                <nav class="navbar">
+                    <div class="navbar-nav">
+                        <div class="title">
+                            <h3>
+                                <i></i>
+                                <span class="title-text"><span class="dashboard-username">{{ user.username }}'s</span><br>Event Page</span>
+                            </h3>
+                        </div>
+                        <ul class="nav-list">
+                            <li class="nav-list-item">
+                                <a href="{% url 'event_page' username=user.username %}">
+                                    <i class="fa-regular fa-calendar"></i>
+                                    <span class="link-text">My Events: {{ events.count }}</span>
+                                </a>
+                            </li>
+                            <li class="nav-list-item">
+                                <a href="{% url 'invites' username=user.username %}" class="nav-link">
+                                    <i class="fa-solid fa-users"></i>
+                                    <span class="link-text">Invite Collaborators</span>
+                                </a>
+                            </li>
+                            <li class="nav-list-item">
+                                <a href="{% url 'chats' username=user.username %}" class="nav-link">
+                                    <i class="fa-brands fa-rocketchat"></i>
+                                    <span class="link-text">Chat Room</span>
+                                </a>
+                            </li>
+                            <li class="nav-list-item">
+                                <a href="{% url 'shared_events' username=user.username %}" class="nav-link">
+                                    <i class="fa-solid fa-share"></i>
+                                    <span class="link-text">Shared Events</span>
+                                </a>
+                            </li>
+                            <li class="nav-list-item">
+                                <a href="#" class="nav-link">
+                                    <i></i>
+                                    <span class="link-text">Placeholder Content</span>
+                                </a>
+                            </li>
+                            <li class="nav-list-item">
+                                <a href="#" class="nav-link">
+                                    <i></i>
+                                    <span class="link-text">Placeholder Content</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </header>
+    </main>
+    {% endblock %}
+    
+    <section class="showcase">
+        {% block info %}
+        <div class="overlay">
+            <div class="head">
+                
+            </div>
+            <div class="content">
+                <div class="welcome">
+                    <div class="content-text">
+                        <h3>Welcome To The Dashboard</h3>
+                        <p>This is just some placeholder text for now</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endblock %}
+    </section>
+    <script src="app/app.js"></script>
 {% endblock %}

@@ -1,0 +1,10 @@
+{% extends 'userdashboard.html' %}
+{% block info %}
+<h1>{{ event.name }}</h1>
+<p>{{event.description}}</p>
+<p>Starts: {{event.start_datetime}}</p>
+<p>Ends: {{event.end_datetime}}</p>
+<p>Location: {{event.event_location}}</p>
+<p>Address: {{event.address}}</p>
+<p>Members: {{event.members}}<p>
+{% endblock %}

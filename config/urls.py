@@ -30,6 +30,12 @@ urlpatterns = [
     path("logout/", views.viewLogout, name="logout"),
     path("dashboard/<str:username>/", views.viewUserDashboard, name="user_dashboard"),
     path("profile/<str:username>/", views.viewUserProfile, name="profile"),
+    path("dashboard/<str:username>/events/", views.EventPage, name="event_page"),
+    path("dashboard/<str:username>/shared/", views.SharedEventPage, name="shared_events"),
+    path("dashboard/<str:username>/events/create/", views.EventCreateView.as_view(), name="event_create"),
+    path("dashboard/<str:username>/events/<str:ename>/", views.EventDetail, name="event_detail"),
+    path("dashboard/<str:username>/invite/", views.InviteUser, name="invites"),
+    path("dashboard/<str:username>/chat/", views.ChatRoom, name="chats"),
     path("admin/", admin.site.urls),
         
 ]

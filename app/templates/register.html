@@ -1,39 +1,47 @@
 {% extends 'base.html'%}
 
 {% block content %}
-
-
+<!-- The main container for the form -->
 <div class="form-content">
-    <h1>Sign Up</h1>
+    <h1 class="form-heading">Sign Up</h1>
 
-
-    <form method="POST" action="">
+    <form method="POST" action="" class="signup-form">
         {% csrf_token %}
-        
 
-        {{form.username.label}}
-        {{form.username}}
+        <!-- Username input -->
+        <div class="form-field">
+            <label class="username-label" for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+            {{ form.username }}
+        </div>
 
-        {{form.email.label}}
-        {{form.email}}
+        <!-- Email input -->
+        <div class="form-field">
+            <label class="username-label" for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+            {{ form.email }}
+        </div>
 
-        {{form.password1.label}}
-        {{form.password1}}
+        <!-- Password input -->
+        <div class="form-field">
+            <label class="label-styling" for="{{ form.password1.id_for_label }}">{{ form.password1.label }}</label>
+            {{ form.password1 }}
+        </div>
 
-        {{form.password2.label}}
-        {{form.password2}}
-        
+        <!-- Confirm password input -->
+        <div class="form-field">
+            <label class="label-styling" for="{{ form.password2.id_for_label }}">{{ form.password2.label }}</label>
+            {{ form.password2 }}
+        </div>
 
+        <!-- Submit button -->
+        <div class="form-submit">
+            <input type="submit" value="Create User" class="submit-btn">
+        </div>
 
-        <input type="submit" name="Create User">
-        <div>
-            Already have an account?
-            <span><a href="{% url 'logout' %}"><i class="fa-solid fa-door-open"></i>Log in to your account</a></span>
+        <!-- Login redirect link -->
+        <div class="login-redirect">
+            <p class="account-label">Already have an account? <a href="{% url 'login' %}" class="login-link"> Log in</a></p>
         </div>
     </form>
-
 </div>
-
-
 
 {% endblock %}

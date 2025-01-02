@@ -41,13 +41,86 @@ a {
 
 /*Styling for the Registration Page*/
 .form-content {
-    background: rgb(37, 37, 57);
-    margin-top: 35vh;
-    color: yellowgreen;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 20vh;
+}
+
+.form-heading {
     text-align: center;
-    width: auto;
-    height: 10em;
-    padding: 2em;
+    font-size: 2em;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Style for each form field */
+.form-field {
+    margin-bottom: 15px;
+}
+
+.label-styling {
+    color: yellowgreen;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.form-field label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.form-field input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.form-field input:focus {
+    border-color: #0056b3;
+    outline: none;
+}
+
+/* Submit button styling */
+.form-submit {
+    text-align: center;
+}
+
+.submit-btn {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.submit-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Login link styling */
+.login-redirect {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.login-link {
+    color: yellowgreen;
+    text-decoration: none;
+}
+
+.login-link:hover {
+    text-decoration: underline;
 }
 
 
@@ -56,9 +129,118 @@ a {
 
 
 /*Styling for the Login Page*/
-.login-container {
-    margin-top: 32vh;
+/* The form container with circular animated border */
+.form-content {
+    width: 100%;
+    max-width: 400px;
+    padding: 30px;
+    background-color: rgb(37, 37, 57);
+    border-radius: 8px;
+    box-shadow: 0 0 0 4px transparent;
+    position: relative;
+    animation: border-circle 3s infinite linear;
 }
+
+/* Define the two-color circular animation */
+@keyframes border-circle {
+    0% {
+        box-shadow: 0 0 0 4px yellowgreen, 0 0 0 6px transparent; /* Red color */
+    }
+    50% {
+        box-shadow: 0 0 0 4px lightblue, 0 0 0 6px transparent; /* Blue color */
+    }
+    100% {
+        box-shadow: 0 0 0 4px yellowgreen, 0 0 0 6px transparent; /* Red color again */
+    }
+}
+
+/* Rest of your existing styles... */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f9f9f9;
+}
+
+.form-heading {
+    text-align: center;
+    font-size: 2em;
+    color: yellowgreen;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    margin-bottom: 20px;
+}
+
+.password-label, .username-label, .account-label {
+    color: lightblue;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.form-field {
+    margin-bottom: 15px;
+}
+
+.form-field label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.form-field input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.form-field input:focus {
+    border-color: yellowgreen;
+    outline: none;
+}
+
+.form-submit {
+    text-align: center;
+}
+
+.submit-btn {
+    padding: 10px 20px;
+    background-color: yellowgreen;
+    color: #fff;
+    font-size: 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.submit-btn:hover {
+    background-color: rgba(153, 205, 50, 0.637);
+}
+
+.error-msg {
+    color: #ff4d4d;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.signup-redirect {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.signup-link {
+    color: yellowgreen;
+    text-decoration: none;
+}
+
+.signup-link:hover {
+    text-decoration: underline;
+}
+
+
 
 
 /*End of login styling*/
@@ -66,12 +248,25 @@ a {
 /*Profile Styling*/
 /* Profile page styles */
 .profile-form-content {
+    
     max-width: 800px;
-    margin: 0 auto;
+    margin: 20vh auto 0;
     padding: 2rem;
     background-color: #f9f9f9;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.profile-image-container {
+    text-align: center;
+}
+
+.profile-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #ddd;
 }
 
 .profile-heading {

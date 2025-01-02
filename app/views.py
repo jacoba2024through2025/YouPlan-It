@@ -17,30 +17,31 @@ def viewHomePage(request):
 
 
 def viewLoginPage(request):
-    
     if request.user.is_authenticated:
-
         print("You are already logged in")
         return redirect('home')
     else:
         print("You are not authenticated")
 
-    
     if request.method == "POST":
         username = request.POST.get('username')
         password = request.POST.get('password')
 
+        # Log the input for debugging purposes
+        print(f"Attempting to authenticate with Username: {username} and Password: {password}")
+
         user = authenticate(request, username=username, password=password)
-        print(user.username)
 
         if user is not None:
             login(request, user)
             return redirect('home')
         else:
-            messages.info(request, "Username or Password is Incorrect")
+            # Inform the user that the credentials were incorrect
+            messages.error(request, "Username or Password is Incorrect")
+            print("Authentication failed")
 
-    context = {}
-    return render(request, 'login.html', context)
+    # No need to pass context explicitly for messages as it's automatically handled
+    return render(request, 'login.html')
 
 
 def viewRegistrationPage(request):

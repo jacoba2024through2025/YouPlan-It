@@ -1,15 +1,25 @@
 {% extends 'userdashboard.html' %}
+
 {% block info %}
-<h3>Your Shared Events</h3><br>
-<ul>
+<div class="shared-events-container">
+  <h3>Your Shared Events</h3><br>
+  
+  <div class="events-list">
     {% if events.count != 0 %}
-      {% for e in events %}
-      <li>
-        <strong><a href="{% url 'event_detail' username=e.user.username ename=e.name %}" style="color:black;">{{ e.name }} ({{ e.start_datetime }})</a></strong><br>
-      </li>
-      {% endfor %}
+      <ul>
+        {% for e in events %}
+          <li class="event-item">
+            <a href="{% url 'event_detail' username=e.user.username ename=e.name %}" class="event-link">
+              <strong>{{ e.name }}</strong> 
+              <span class="event-time">({{ e.start_datetime }})</span>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
     {% else %}
-      No events have been shared with you.
+      <p>No events have been shared with you.</p>
     {% endif %}
-</ul>
+  </div>
+</div>
+
 {% endblock %}

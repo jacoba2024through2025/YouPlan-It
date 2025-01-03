@@ -12,11 +12,10 @@ from django.views import View
 
 def viewHomePage(request):
     if request.user.is_authenticated:
-        profile = Profile.objects.get(user=request.user)  
         context = {
             'events': Events.events_within_next_14_days(request.user),
             'user': request.user,
-            'profile': profile
+            'profile': Profile.objects.get(user=request.user)
         }
     else:
         context = {
@@ -27,9 +26,6 @@ def viewHomePage(request):
 
     return render(request, 'base.html', context)
     
-
-
-
 
 def viewLoginPage(request):
     if request.user.is_authenticated:
@@ -90,7 +86,9 @@ def viewUserDashboard(request, username):
     context = {
         'user': user,
         'events': Events.objects.filter(user=request.user),
-        'profile': profile  
+        'profile': profile,
+        'myevents': Events.objects.filter(user=request.user),
+        'invites': user.pending.filter(invitepending=user)
     }
 
     return render(request, 'userdashboard.html', context)
@@ -126,7 +124,7 @@ def EventPage(request, username):
     if request.user.is_authenticated:
         profile = Profile.objects.get(user=request.user)  
         context = {
-            'events': Events.objects.filter(user=request.user),
+            'myevents': Events.objects.filter(user=request.user),
             'user': request.user,
             'profile': profile  
         }
@@ -135,6 +133,7 @@ def SharedEventPage(request, username):
     if request.user.is_authenticated:
         profile = Profile.objects.get(user=request.user)  
         context = {
+            'myevents': Events.objects.filter(user=request.user),
             'events': Events.objects.filter(members=request.user).exclude(user=request.user),
             'user': request.user,
             'profile': profile  
@@ -143,21 +142,38 @@ def SharedEventPage(request, username):
 class EventCreateView(View):
     def get(self, request, username):
         form = CreateEventForm()
-        return render(request, 'eventcreation.html', {'form': form})
+        return render(request, 'eventcreation.html', {'form': form, 'myevents': Events.objects.filter(user=request.user), 'profile': Profile.objects.get(user=request.user)})
 
     def post(self, request, username):
-        form = CreateEventForm(request.POST)
+        form = CreateEventForm(request.POST, request.FILES)
         if form.is_valid():
             event = form.save(commit=False)
             event.user = request.user  # Assuming the user is logged in
             event.save()
             event.members.add(request.user)  # Add the creator to the members field
-            return redirect('event_detail', username=event.user.username, event=event.name)
-        return render(request, 'eventcreation.html', {'form': form})
+            return redirect('event_detail', username=event.user.username, ename=event.name)
+        return render(request, 'eventcreation.html', {'form': form, 'myevents': Events.objects.filter(user=request.user), 'profile': Profile.objects.get(user=request.user)})
+class EventUpdateView(View):
+    def get(self, request, username, ename):
+        update = Events.objects.get(name=ename, user=User.objects.get(username=username))
+        form = CreateEventForm(instance=update)
+        return render(request, 'eventcreation.html', {'form': form, 'myevents': Events.objects.filter(user=request.user), 'profile': Profile.objects.get(user=request.user)})
 
+    def post(self, request, username, ename):
+        update = Events.objects.get(name=ename, user=User.objects.get(username=username))
+        form = CreateEventForm(request.POST, request.FILES, instance=update)
+        if form.is_valid():
+            event = form.save(commit=False)
+            event.user = request.user  # Assuming the user is logged in
+            event.save()
+            event.members.add(request.user)  # Add the creator to the members field
+            return redirect('event_detail', username=event.user.username, ename=event.name)
+        return render(request, 'eventcreation.html', {'form': form, 'myevents': Events.objects.filter(user=request.user), 'profile': Profile.objects.get(user=request.user)})
+    
 def EventDetail(request, username, ename):
     event = Events.objects.get(name=ename, user=User.objects.get(username=username))
-    return render(request, 'eventdetails.html', {'event': event})
+    members = event.members.all()
+    return render(request, 'eventdetails.html', {'event': event, 'myevents': Events.objects.filter(user=request.user), 'profile': Profile.objects.get(user=request.user), 'members':members.exclude(username=event.user)})
 
 def InviteUser(request, username):
     if request.method == 'POST':
@@ -166,16 +182,61 @@ def InviteUser(request, username):
             event = form.cleaned_data['event']
             usernames = form.cleaned_data['usernames']
             username_list = [username.strip() for username in usernames.split(',')]
-            members = User.objects.filter(username__in=username_list)
-            event.members.add(*members)
-            return redirect('event_detail', username=event.user.username, pk=event.pk)
+            members = []
+            invalid_usernames = []
+            for username in username_list:
+                try:
+                    user = User.objects.get(username=username)
+                    members.append(user)
+                except User.DoesNotExist:
+                    invalid_usernames.append(username)
+            
+            if invalid_usernames:
+                success = f"Unable to find users: {', '.join(invalid_usernames)}."
+            else:
+                event.invitepending.add(*members)
+                success = "User(s) invited successfully."
+            invited_profiles = []
+            for member in members:
+                profile = Profile.objects.get(user=member)
+                invited_profiles.append(profile)
+            
+            context = {'form': form,
+                'myevents': Events.objects.filter(user=request.user),
+               'success': success,
+               'profile': Profile.objects.get(user=request.user),
+               'invited_profiles': invited_profiles,
+               }
+            return render(request, 'invites.html', context)
     else:
         form = AddMembersToEventForm(user=request.user)
-    context = {'form': form}
+    success = ""
+    context = {'form': form,
+               'myevents': Events.objects.filter(user=request.user),
+               'success': success,
+               'profile': Profile.objects.get(user=request.user)}
     return render(request, 'invites.html', context)
 
 @login_required
 
 @login_required
 def ChatRoom(request, username):
-    return render(request, 'chatroom.html')
+    context = {
+        'profile': Profile.objects.get(user=request.user),
+        'myevents': Events.objects.filter(user=request.user)
+    }
+    return render(request, 'chatroom.html', context)
+
+def deleteEvent(request, username, ename):
+    event = Events.objects.get(name=ename, user=User.objects.get(username=username))
+    event.delete()
+    return redirect('event_page', username=username)
+def acceptInvite(request, username, ename):
+    event = Events.objects.get(name=ename, user=User.objects.get(username=username))
+    event.members.add(request.user)
+    event.invitepending.remove(request.user)
+    return redirect('user_dashboard', username=request.user.username)
+def declineInvite(request, username, ename):
+    event = Events.objects.get(name=ename, user=User.objects.get(username=username))
+    event.invitepending.remove(request.user)
+    return redirect('user_dashboard', username=request.user.username)

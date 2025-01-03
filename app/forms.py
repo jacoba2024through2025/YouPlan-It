@@ -32,6 +32,10 @@ class AddMembersToEventForm(forms.Form):
         super(AddMembersToEventForm, self).__init__(*args, **kwargs)
         if user:
             self.fields['event'].queryset = Events.objects.filter(user=user)
+
+class CreateChatChannel(forms.Form):
+    pass
+
 class CreateUserForm(UserCreationForm):
     
     #Subclass for all the fields

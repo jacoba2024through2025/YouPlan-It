@@ -33,9 +33,13 @@ urlpatterns = [
     path("dashboard/<str:username>/events/", views.EventPage, name="event_page"),
     path("dashboard/<str:username>/shared/", views.SharedEventPage, name="shared_events"),
     path("dashboard/<str:username>/events/create/", views.EventCreateView.as_view(), name="event_create"),
+    path("dashboard/<str:username>/events/update/<str:ename>/", views.EventUpdateView.as_view(), name="event_update"),
     path("dashboard/<str:username>/events/<str:ename>/", views.EventDetail, name="event_detail"),
+    path("dashboard/<str:username>/events/<str:ename>/delete/", views.deleteEvent, name="event_delete"),
     path("dashboard/<str:username>/invite/", views.InviteUser, name="invites"),
     path("dashboard/<str:username>/chat/", views.ChatRoom, name="chats"),
+    path("accept-invite/<str:username>/<str:ename>/", views.acceptInvite, name="accept"),
+    path("decline-invite/<str:username>/<str:ename>/", views.declineInvite, name="decline"),
     path("admin/", admin.site.urls),
         
 ]

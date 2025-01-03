@@ -31,7 +31,7 @@
       </span>
       <div class="profile-image-container">
         <img src="{% if profile.image %}{{ profile.image.url }}{% else %}/media/profile_pics/default.jpg{% endif %}" 
-             alt="{{ user.username }}'s Profile Picture" 
+             alt="?" 
              class="profile-image-base">
       </div>
       <p class="welcome-message">Welcome back, {{request.user.username}}</p>

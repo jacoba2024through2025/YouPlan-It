@@ -16,7 +16,7 @@
                             <li class="nav-list-item">
                                 <a href="{% url 'event_page' username=user.username %}">
                                     <i class="fa-regular fa-calendar"></i>
-                                    <span class="link-text">My Events: {{ events.count }}</span>
+                                    <span class="link-text">My Events: {{ myevents.count }}</span>
                                 </a>
                             </li>
                             <li class="nav-list-item">
@@ -40,13 +40,13 @@
                             <li class="nav-list-item">
                                 <a href="#" class="nav-link">
                                     <i></i>
-                                    <span class="link-text">Placeholder Content</span>
+                                    <span class="link-text"></span>
                                 </a>
                             </li>
                             <li class="nav-list-item">
                                 <a href="#" class="nav-link">
                                     <i></i>
-                                    <span class="link-text">Placeholder Content</span>
+                                    <span class="link-text"></span>
                                 </a>
                             </li>
                         </ul>
@@ -67,7 +67,24 @@
                 <div class="welcome">
                     <div class="content-text">
                         <h3>Welcome To The Dashboard</h3>
-                        <p>This is just some placeholder text for now</p>
+                        <p><i class="fa-solid fa-bell"></i> My Notifications: </p>
+                        <div class="invites">
+                            {% for i in invites %}
+                                <div class="invite-item">
+                                    <p>Invited to <span class="event-name">{{ i.name }}</span>, hosted by <span class="host-name">{{ i.user }}</span></p>
+                                    <div class="action-buttons">
+                                        <button class="accept-btn">
+                                            <a href="{% url 'accept' username=i.user.username ename=i.name %}">
+                                            Accept Invite
+                                        </button>
+                                        <button class="decline-btn">
+                                            <a href="{% url 'decline' username=i.user.username ename=i.name %}">
+                                            Decline Invite
+                                        </button>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
             </div>

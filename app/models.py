@@ -12,7 +12,7 @@ class Events(models.Model):
     ##The event's description
     description = models.CharField(max_length=500)
     ##The user can provide an image if they want to
-    event_image = models.ImageField(blank=True, null=True)
+    event_image = models.ImageField(upload_to='event_images', blank=True, null=True)
 
 
     ##The user that is associated with the event (should be the one currently logged in)
@@ -20,6 +20,7 @@ class Events(models.Model):
 
     #for the invited users for an event
     members = models.ManyToManyField(User, related_name='invitedusers')
+    invitepending = models.ManyToManyField(User, related_name='pending')
     ###Fields for the dates of when the event starts and when it ends
     start_datetime = models.DateTimeField()
     end_datetime = models.DateTimeField()

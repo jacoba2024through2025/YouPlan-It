@@ -1,10 +1,43 @@
 {% extends 'userdashboard.html' %}
+
 {% block info %}
-<h1>{{ event.name }}</h1>
-<p>{{event.description}}</p>
-<p>Starts: {{event.start_datetime}}</p>
-<p>Ends: {{event.end_datetime}}</p>
-<p>Location: {{event.event_location}}</p>
-<p>Address: {{event.address}}</p>
-<p>Members: {{event.members}}<p>
+<div class="event-details">
+    <h1>{{ event.name }}</h1>
+
+    <div class="event-image-container">
+        {% if event.event_image %}
+            <img class="image-downsize" src="{{ event.event_image.url }}" alt="Event Image" />
+        {% else %}
+            <img class="default-image" src="{{ '/media/profile_pics/default.jpg' }}" alt="Default Event Image" />
+        {% endif %}
+    </div>
+    <p>Event Host: {{event.user.username}}</p>
+    <p>Event Description: {{ event.description }}</p>
+
+    <div class="event-info">
+        <p><strong>Starts:</strong> {{ event.start_datetime }}</p>
+        <p><strong>Ends:</strong> {{ event.end_datetime }}</p>
+        <p><strong>Location:</strong> {{ event.event_location }}</p>
+        <p><strong>Address:</strong> {{ event.address }}</p>
+    </div>
+
+    <div class="members-list">
+        <p><strong>Members:</strong> {{ members.count }}</p>
+        <ul>
+            {% if members.count != 0 %}
+                {% for i in members %}
+                    <li>
+                        <span>{{ i.username }}</span>
+                    </li>
+                {% endfor %}
+            {% else %}
+                <p>You haven't added any members to this event.</p>
+            {% endif %}
+        </ul>
+    </div>
+
+    {% if event.user.username == request.user.username %}<h1 class="edit-link"><a href="{% url 'event_update' username=event.user.username ename=event.name %}">Edit Event</a></h1>{% endif %}
+    {% if event.user.username == request.user.username %}<h1><a href="{% url 'event_delete' username=event.user.username ename=event.name %}" class="delete-link">Delete Event</a></h1>{% endif %}
+</div>
+
 {% endblock %}

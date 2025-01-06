@@ -37,14 +37,14 @@
                                         <ul>
                                             {% for event in myevents %}
                                                 <li>
-                                                    <a href="{% url 'chats' username=user.username event_id=event.id %}">
+                                                    <a href="{% url 'chats' username=user.username event_id=event.id %}" class="event-chat-room-text">
                                                         Chat Room for {{ event.name }}
                                                     </a>
                                                 </li>
                                             {% endfor %}
                                             {% for event in shared_events %}
                                                 <li>
-                                                    <a href="{% url 'chats' username=user.username event_id=event.id %}">
+                                                    <a href="{% url 'chats' username=user.username event_id=event.id %}" class="event-chat-room-text">
                                                         Chat Room for {{ event.name }}
                                                     </a>
                                                 </li>

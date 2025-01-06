@@ -71,10 +71,21 @@
           <div class="image-container">
             <img src="{% static 'images/youplanit.png' %}" alt="Project Logo" class="home-logo-style">
           </div>
+          <br></br>
           <div class="upcoming-events-container">
             <h3>Upcoming Events</h3>
             <ul>
                 {% if events %}
+                    <div class="event-image">
+                      {% for event in events %}
+                        {% if event.event_image %}
+                            <img  src="{{ event.event_image.url }}" alt="Event Image" />
+                        {% else %}
+                            <img class="default-image" src="{{ '/media/profile_pics/default.jpg' }}" alt="Default Event Image" />
+                        {% endif %}
+                      {% endfor %}
+                    </div>
+                
                     {% for e in events %}
                     <li class="event-item">
                         <strong>
@@ -82,14 +93,11 @@
                                 {{ e.name }} (Hosted by: {% if e.user == request.user.username %}You{% else %}{{ e.user }}{% endif %}, {{ e.start_datetime }} - {{ e.end_datetime }})
                             </a>
                         </strong>
-                        <div class="event-image">
-                            <img src="{% if e.event_image %}{{ e.event_image }}{% else %}/media/profile_pics/default.jpg{% endif %}" 
-                                alt="Event Image" class="event-image">
-                        </div>
+                        
                     </li>
                     {% endfor %}
                 {% else %}
-                    <li>No upcoming events</li>
+                    <li class="list-upcoming-events">No upcoming events</li>
                 {% endif %}
             </ul>
           </div>

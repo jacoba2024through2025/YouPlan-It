@@ -15,13 +15,15 @@ def viewHomePage(request):
         context = {
             'events': Events.events_within_next_14_days(request.user),
             'user': request.user,
-            'profile': Profile.objects.get(user=request.user)
+            'profile': Profile.objects.get(user=request.user),
+            
         }
     else:
         context = {
-            'events': Events.objects.none(),  # Return an empty queryset instead of 0
+            'events': Events.objects.none(),  
             'user': None,
-            'profile': None  
+            'profile': None, 
+            
         }
 
     return render(request, 'base.html', context)
@@ -124,11 +126,13 @@ def viewUserProfile(request, username):
 @login_required
 def EventPage(request, username):
     if request.user.is_authenticated:
-        profile = Profile.objects.get(user=request.user)  
+        profile = Profile.objects.get(user=request.user)
+        shared_events = Events.objects.filter(members=request.user).exclude(user=request.user)  
         context = {
             'myevents': Events.objects.filter(user=request.user),
             'user': request.user,
-            'profile': profile  
+            'profile': profile,
+            'shared_events': shared_events  
         }
     return render(request, 'eventform1.html', context)
 def SharedEventPage(request, username):
@@ -203,6 +207,8 @@ def EventDetail(request, username, ename):
     })
 
 def InviteUser(request, username):
+    shared_events = Events.objects.filter(members=request.user).exclude(user=request.user)
+    
     if request.method == 'POST':
         form = AddMembersToEventForm(request.POST, user=request.user)
         if form.is_valid():
@@ -228,21 +234,29 @@ def InviteUser(request, username):
                 profile = Profile.objects.get(user=member)
                 invited_profiles.append(profile)
             
-            context = {'form': form,
+            context = {
+                'form': form,
                 'myevents': Events.objects.filter(user=request.user),
-               'success': success,
-               'profile': Profile.objects.get(user=request.user),
-               'invited_profiles': invited_profiles,
-               }
-            return render(request, 'invites.html', context)
+                'success': success,
+                'profile': Profile.objects.get(user=request.user),
+                'invited_profiles': invited_profiles,
+                'shared_events': shared_events
+            }
+            return render(request, 'invites.html', context)  # Check for tuple-like behavior
     else:
         form = AddMembersToEventForm(user=request.user)
+    
     success = ""
-    context = {'form': form,
-               'myevents': Events.objects.filter(user=request.user),
-               'success': success,
-               'profile': Profile.objects.get(user=request.user)}
-    return render(request, 'invites.html', context)
+    context = {
+        'form': form,
+        'myevents': Events.objects.filter(user=request.user),
+        'success': success,
+        'profile': Profile.objects.get(user=request.user),
+        'shared_events': shared_events
+    }
+    
+    return render(request, 'invites.html', context)  
+
 
 @login_required
 

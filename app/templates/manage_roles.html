@@ -1,0 +1,39 @@
+{% extends 'userdashboard.html' %}
+
+{% block info %}
+<form method="POST">
+    {% csrf_token %}
+    
+    <!-- Dropdown for selecting a user -->
+    <label for="user">Select User</label>
+    <select name="user" id="user" required>
+        {% for member in members %}
+            <option value="{{ member.username }}">{{ member.username }}</option>
+        {% endfor %}
+    </select>
+    
+    <!-- Dropdown for selecting a role -->
+    <label for="role">Select Role</label>
+    <select name="role" id="role" required>
+        {% for role in event.role_set.all %}
+            <option value="{{ role.name }}">{{ role.name }}</option>
+        {% endfor %}
+    </select>
+    
+    <!-- Permissions for the selected role -->
+    <label for="permissions">Select Permissions</label>
+    <div id="permissions">
+        {% for permission in permissions %}
+            <label>
+                <input type="checkbox" name="permissions" value="{{ permission.id }}">
+                {{ permission.name }}
+            </label><br>
+        {% endfor %}
+    </div>
+    
+    <button type="submit">Assign Role</button>
+</form>
+
+{% endblock %}
+
+

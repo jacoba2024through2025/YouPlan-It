@@ -28,6 +28,16 @@
                 {% for i in members %}
                     <li>
                         <span>{{ i.username }}</span>
+                        
+                        {% if event.user.username == request.user.username %}
+                            <form method="POST" action="{% url 'remove_member' username=username ename=event.name %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="user_to_remove" value="{{ i.username }}"> <!-- Hidden input for the user to remove -->
+                                <button class="remove-member-button" type="submit"><i class="fa-solid fa-trash-can"></i>Remove</button>
+                            </form>
+                        
+                        {% endif %}
+
                     </li>
                 {% endfor %}
             {% else %}

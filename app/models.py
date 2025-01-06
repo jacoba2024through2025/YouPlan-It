@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime, timedelta
 from django.utils import timezone
+from django.contrib.auth.models import Group, Permission
 
 
 ##model for event creation
@@ -31,6 +32,9 @@ class Events(models.Model):
     address = models.CharField(max_length=500, blank=True, null=True)
 
 
+    
+
+
     ##returns the name of the event for testing purpose's in the admin page
 
     def __str__(self):
@@ -41,14 +45,7 @@ class Events(models.Model):
         next_14_days = now + timedelta(days=14)
         return who.invitedusers.filter(start_datetime__gte=now, start_datetime__lte=next_14_days, members=who).order_by('start_datetime')
 
-class Channel(models.Model):
-    name = models.CharField(max_length=200)
-    users = models.ManyToManyField(User, blank=True)
 
-class Message(models.Model):
-    content = models.TextField()
-    sender = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
-    channel = models.ForeignKey(Channel, blank=True, null=True, on_delete=models.CASCADE)
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.ImageField(default='default.jpg', upload_to='profile_pics')
@@ -56,7 +53,12 @@ class Profile(models.Model):
 
     def __str__(self):
         return f'{self.user.username} Profile'
-class Role(models.Model):
-    name = models.TextField()
-    event = models.ForeignKey(Events, blank=True, null=True, on_delete=models.CASCADE)
-    members = models.ManyToManyField(User, blank=True)
+
+class ChatMessage(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    message = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    event = models.ForeignKey(Events, on_delete=models.CASCADE, default=1)
+
+    def __str__(self):
+        return f'{self.user.username} at {self.timestamp}'

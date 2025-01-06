@@ -1,52 +1,42 @@
 {% extends 'base.html' %}
 
+
+
+
 {% block content %}
-    <div class="profile-form-content">
-        <h1 class="profile-heading">Welcome to {{ user.username }}'s Profile</h1>
-
-        
-
-        <!-- Display the profile image -->
-        <div class="profile-image-container">
-            <img src="{% if profile.image %}{{ profile.image.url }}{% else %}/media/profile_pics/default.jpg{% endif %}" 
-                 alt="{{ user.username }}'s Profile Picture" 
-                 class="profile-image">
-        </div>
-
-        <h2 class="users-email">Email: {{user.email}}</h2>
-
-        <!-- Profile form -->
-        <form method="POST" enctype="multipart/form-data" class="profile-form">
-            {% csrf_token %}
+    <html class="profile-page">
+        <div class="profile-form-content">
+            <h1 class="profile-heading">Welcome to {{ user.username }}'s Profile</h1>
+    
             
-            <div class="form-fields">
-                {{ form.as_p }}
+    
+            <!-- Display the profile image -->
+            <div class="profile-image-container">
+                <img src="{% if profile.image %}{{ profile.image.url }}{% else %}/media/profile_pics/default.jpg{% endif %}" 
+                     alt="{{ user.username }}'s Profile Picture" 
+                     class="profile-image">
             </div>
-
-            <button type="submit" class="save-button">Save Changes</button>
-        </form>
-
-        {% if events.count != 0 %}
-        <div class="your-events">
-            <p>You have {{event.count}} events.</p>
-            <p>Your events:</p>
-                {% for e in events%}
-                    <p>{{e.name}}</p>
-                    <p>{{e.description}}</p>
-                    <p>{{e.event_location}}</p>
-                {% endfor %}
-
+    
+            <h2 class="users-email">Email: {{user.email}}</h2>
+    
+            <!-- Profile form -->
+            <form method="POST" enctype="multipart/form-data" class="profile-form">
+                {% csrf_token %}
+                
+                <div class="form-fields">
+                    {{ form.as_p }}
+                </div>
+    
+                <button type="submit" class="save-button">Save Changes</button>
+            </form>
+    
+            
+            
+            
+              
+            
         </div>
-          
-        {% else %}
-        <div class="no-events">
-            <p>You have no events. Create One In Your Dashboard</p>
-            <button>Create An Event</button>
-        
-        </div>
-        
-        
-          
-        {% endif %}
-    </div>
+
+    </html>
+    
 {% endblock %}

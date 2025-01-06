@@ -1,10 +1,50 @@
 {% extends 'userdashboard.html' %}
 {% block info %}
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save</button>
-</form>
+<div class="form-container">
+    <h2>Create Event</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="id_name">Event Name</label>
+            {{ form.name }}
+        </div>
+
+        <div class="form-group">
+            <label for="id_description">Description</label>
+            {{ form.description }}
+        </div>
+
+        <div class="form-group">
+            <label for="id_event_image">Event Image</label>
+            {{ form.event_image }}
+        </div>
+
+        <div class="form-group">
+            <label for="id_event_location">Event Location</label>
+            {{ form.event_location }}
+        </div>
+
+        <div class="form-group">
+            <label for="id_address">Address</label>
+            {{ form.address }}
+        </div>
+
+        <div class="form-group">
+            <label for="id_start_datetime">Start Date & Time</label>
+            {{ form.start_datetime }}
+        </div>
+
+        <div class="form-group">
+            <label for="id_end_datetime">End Date & Time</label>
+            {{ form.end_datetime }}
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn-submit">Save</button>
+        </div>
+    </form>
+</div>
 
 
 {% endblock %}

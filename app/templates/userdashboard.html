@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+<html class="user-dashboard">
     {% block sidebar %}
     <main class="main-wrap">
         <header class="main-head">
@@ -26,27 +27,38 @@
                                 </a>
                             </li>
                             <li class="nav-list-item">
-                                <a href="{% url 'chats' username=user.username %}" class="nav-link">
+                                <a href="#" class="nav-link" data-toggle="dropdown">
                                     <i class="fa-brands fa-rocketchat"></i>
                                     <span class="link-text">Chat Room</span>
                                 </a>
+                                <div class="dropdown-menu">
+                                    {% if myevents or shared_events %}
+                                        <h5>Select an Event</h5>
+                                        <ul>
+                                            {% for event in myevents %}
+                                                <li>
+                                                    <a href="{% url 'chats' username=user.username event_id=event.id %}">
+                                                        Chat Room for {{ event.name }}
+                                                    </a>
+                                                </li>
+                                            {% endfor %}
+                                            {% for event in shared_events %}
+                                                <li>
+                                                    <a href="{% url 'chats' username=user.username event_id=event.id %}">
+                                                        Chat Room for {{ event.name }}
+                                                    </a>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% else %}
+                                        <p>You have no events to chat about.</p>
+                                    {% endif %}
+                                </div>
                             </li>
                             <li class="nav-list-item">
                                 <a href="{% url 'shared_events' username=user.username %}" class="nav-link">
                                     <i class="fa-solid fa-share"></i>
                                     <span class="link-text">Shared Events</span>
-                                </a>
-                            </li>
-                            <li class="nav-list-item">
-                                <a href="#" class="nav-link">
-                                    <i></i>
-                                    <span class="link-text"></span>
-                                </a>
-                            </li>
-                            <li class="nav-list-item">
-                                <a href="#" class="nav-link">
-                                    <i></i>
-                                    <span class="link-text"></span>
                                 </a>
                             </li>
                         </ul>
@@ -74,12 +86,10 @@
                                     <p>Invited to <span class="event-name">{{ i.name }}</span>, hosted by <span class="host-name">{{ i.user }}</span></p>
                                     <div class="action-buttons">
                                         <button class="accept-btn">
-                                            <a href="{% url 'accept' username=i.user.username ename=i.name %}">
-                                            Accept Invite
+                                            <a href="{% url 'accept' username=i.user.username ename=i.name %}">Accept Invite</a>
                                         </button>
                                         <button class="decline-btn">
-                                            <a href="{% url 'decline' username=i.user.username ename=i.name %}">
-                                            Decline Invite
+                                            <a href="{% url 'decline' username=i.user.username ename=i.name %}">Decline Invite</a>
                                         </button>
                                     </div>
                                 </div>
@@ -91,5 +101,8 @@
         </div>
         {% endblock %}
     </section>
-    <script src="app/app.js"></script>
+    
 {% endblock %}
+
+</html>
+    

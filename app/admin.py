@@ -6,10 +6,7 @@ admin.site.register(Events)
 
 admin.site.register(Profile)
 
-admin.site.register(Channel)
+admin.site.register(ChatMessage)
 
-admin.site.register(Message)
-
-admin.site.register(Role)
 
 

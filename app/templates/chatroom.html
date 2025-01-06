@@ -1,4 +1,32 @@
 {% extends 'userdashboard.html' %}
+
 {% block info %}
-    <h1>{{event.user.username}}</h1>
+<div class="chat-room">
+    <h2 class="h2-center">Chat for {{ event.name }}</h2>
+    
+    <div class="chat-messages">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="chat-message">
+                    <p><strong>{{ message.user.username }}:</strong> {{ message.message }}</p>
+                    <p><em>{{ message.timestamp }}</em></p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No messages yet!</p>
+        {% endif %}
+    </div>
+    
+    <div class="message-input">
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <textarea name="message" placeholder="Type your message..." class="form-control"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Send</button>
+        </form>
+    </div>
+</div>
 {% endblock %}
+
+

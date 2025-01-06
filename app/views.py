@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from app.models import *
 from django.views import View
-
+from django.contrib.auth.models import Group, Permission
 
 
 def viewHomePage(request):
@@ -19,12 +19,13 @@ def viewHomePage(request):
         }
     else:
         context = {
-            'events': 0,
-            'user': 0,
+            'events': Events.objects.none(),  # Return an empty queryset instead of 0
+            'user': None,
             'profile': None  
         }
 
     return render(request, 'base.html', context)
+
     
 
 def viewLoginPage(request):
@@ -38,7 +39,7 @@ def viewLoginPage(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
 
-        # Log the input for debugging purposes
+        
         print(f"Attempting to authenticate with Username: {username} and Password: {password}")
 
         user = authenticate(request, username=username, password=password)
@@ -47,11 +48,11 @@ def viewLoginPage(request):
             login(request, user)
             return redirect('home')
         else:
-            # Inform the user that the credentials were incorrect
+            
             messages.error(request, "Username or Password is Incorrect")
             print("Authentication failed")
 
-    # No need to pass context explicitly for messages as it's automatically handled
+    
     return render(request, 'login.html')
 
 
@@ -82,13 +83,14 @@ def viewLogout(request):
 def viewUserDashboard(request, username):
     user = get_object_or_404(User, username=username)
     profile = Profile.objects.get(user=user)  
-    
+    shared_events = Events.objects.filter(members=request.user).exclude(user=request.user)
     context = {
         'user': user,
         'events': Events.objects.filter(user=request.user),
         'profile': profile,
         'myevents': Events.objects.filter(user=request.user),
-        'invites': user.pending.filter(invitepending=user)
+        'invites': user.pending.filter(invitepending=user),
+        'shared_events': shared_events
     }
 
     return render(request, 'userdashboard.html', context)
@@ -98,26 +100,26 @@ def viewUserProfile(request, username):
     # Get the user object, or return a 404 if not found
     user = get_object_or_404(User, username=username)
 
-    # Get or create the user's profile
+    
     profile, created = Profile.objects.get_or_create(user=user)
 
-    # Handle form submission (POST)
+    
     if request.method == 'POST':
         form = ProfileImageForm(request.POST, request.FILES, instance=profile)
         
         if form.is_valid():
-            form.save()  # Save the profile with the new data
-            return redirect('profile', username=username)  # Redirect after saving
+            form.save()  
+            return redirect('profile', username=username)  
     else:
-        # Initialize the form with the current profile data (GET)
+        
         form = ProfileImageForm(instance=profile)
 
-    # Pass the user and profile to the template context
+    
     return render(request, 'profile.html', {
         'form': form,
         'user': user,
         'profile': profile,
-        'events':Events.objects.filter(user=request.user)  # Pass profile to template for image display
+        'events':Events.objects.filter(user=request.user)  
     })
 @login_required
 def EventPage(request, username):
@@ -142,17 +144,31 @@ def SharedEventPage(request, username):
 class EventCreateView(View):
     def get(self, request, username):
         form = CreateEventForm()
-        return render(request, 'eventcreation.html', {'form': form, 'myevents': Events.objects.filter(user=request.user), 'profile': Profile.objects.get(user=request.user)})
+        return render(request, 'eventcreation.html', {
+            'form': form, 
+            'myevents': Events.objects.filter(user=request.user),
+            'profile': Profile.objects.get(user=request.user)
+        })
 
     def post(self, request, username):
         form = CreateEventForm(request.POST, request.FILES)
         if form.is_valid():
+            
             event = form.save(commit=False)
-            event.user = request.user  # Assuming the user is logged in
+            event.user = request.user  
             event.save()
-            event.members.add(request.user)  # Add the creator to the members field
-            return redirect('event_detail', username=event.user.username, ename=event.name)
-        return render(request, 'eventcreation.html', {'form': form, 'myevents': Events.objects.filter(user=request.user), 'profile': Profile.objects.get(user=request.user)})
+
+            
+
+            event.members.add(request.user)  
+            return redirect('event_detail', username=request.user.username, ename=event.name)
+        
+        return render(request, 'eventcreation.html', {
+            'form': form, 
+            'myevents': Events.objects.filter(user=request.user),
+            'profile': Profile.objects.get(user=request.user)
+        })
+
 class EventUpdateView(View):
     def get(self, request, username, ename):
         update = Events.objects.get(name=ename, user=User.objects.get(username=username))
@@ -164,16 +180,27 @@ class EventUpdateView(View):
         form = CreateEventForm(request.POST, request.FILES, instance=update)
         if form.is_valid():
             event = form.save(commit=False)
-            event.user = request.user  # Assuming the user is logged in
+            event.user = request.user  
             event.save()
-            event.members.add(request.user)  # Add the creator to the members field
+            event.members.add(request.user)  
             return redirect('event_detail', username=event.user.username, ename=event.name)
         return render(request, 'eventcreation.html', {'form': form, 'myevents': Events.objects.filter(user=request.user), 'profile': Profile.objects.get(user=request.user)})
     
 def EventDetail(request, username, ename):
-    event = Events.objects.get(name=ename, user=User.objects.get(username=username))
-    members = event.members.all()
-    return render(request, 'eventdetails.html', {'event': event, 'myevents': Events.objects.filter(user=request.user), 'profile': Profile.objects.get(user=request.user), 'members':members.exclude(username=event.user)})
+    
+    event = get_object_or_404(Events, name=ename, user__username=username)
+    
+    
+    members = event.members.all().exclude(username=event.user.username)
+    
+    
+    return render(request, 'eventdetails.html', {
+        'event': event,
+        'myevents': Events.objects.filter(user=request.user),
+        'profile': Profile.objects.get(user=request.user),
+        'members': members,
+        'username': username,  
+    })
 
 def InviteUser(request, username):
     if request.method == 'POST':
@@ -219,13 +246,42 @@ def InviteUser(request, username):
 
 @login_required
 
+
 @login_required
-def ChatRoom(request, username):
-    context = {
+def chat_room(request, username, event_id):
+    # Get the event object using the event_id
+    event = get_object_or_404(Events, id=event_id)
+    
+    shared_events = Events.objects.filter(members=request.user).exclude(user=request.user)
+
+    # Check if the user is the event creator or a member (including those who have accepted invites)
+    if request.user != event.user and request.user not in event.members.all():
+        # If not a member, redirect to the event selection page to create a chat room
+        return redirect('create_chat_room', username=username)
+
+    # Handle the message submission in the chat room
+    if request.method == 'POST':
+        message = request.POST.get('message')
+        if message:
+            # Save the message to the database
+            ChatMessage.objects.create(event=event, user=request.user, message=message)
+
+    # Get the messages for this event, ordered by timestamp (newest first)
+    messages = ChatMessage.objects.filter(event=event).order_by('-timestamp')
+
+    # Render the chat room template with the event and messages
+    return render(request, 'chatroom.html', {
+        'event': event,
+        'messages': messages,
+        'username': username,
         'profile': Profile.objects.get(user=request.user),
-        'myevents': Events.objects.filter(user=request.user)
-    }
-    return render(request, 'chatroom.html', context)
+        'myevents': Events.objects.filter(user=request.user),  # User's events for the sidebar or navigation
+        'shared_events': shared_events
+    })
+
+
+
+
 
 def deleteEvent(request, username, ename):
     event = Events.objects.get(name=ename, user=User.objects.get(username=username))
@@ -240,3 +296,47 @@ def declineInvite(request, username, ename):
     event = Events.objects.get(name=ename, user=User.objects.get(username=username))
     event.invitepending.remove(request.user)
     return redirect('user_dashboard', username=request.user.username)
+
+@login_required
+def remove_member(request, username, ename):
+    
+    event = get_object_or_404(Events, name=ename, user__username=username)
+
+    if request.method == 'POST':
+        
+        user_to_remove_username = request.POST.get('user_to_remove')
+        user_to_remove = get_object_or_404(User, username=user_to_remove_username)
+
+        
+        event.members.remove(user_to_remove)
+
+        
+        return redirect('event_detail', username=username, ename=ename)
+    
+
+
+    
+    return redirect('event_detail', username=username, ename=ename)
+
+
+
+
+
+
+
+@login_required
+def create_chat_room(request, username):
+    if request.method == 'POST':
+        form = SelectEventForm(request.user, request.POST)
+        if form.is_valid():
+            event = form.cleaned_data['event']
+            return redirect('chat_room', username=username, event_id=event.id)  
+    else:
+        form = SelectEventForm(request.user)
+
+    return render(request, 'select_event.html', {
+        'form': form,
+        'username': username,
+    })
+
+

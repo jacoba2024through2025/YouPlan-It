@@ -42,3 +42,20 @@ class CreateUserForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'password1', 'password2']
+
+class ChatMessageForm(forms.ModelForm):
+    class Meta:
+        model = ChatMessage
+        fields = ['message']
+        widgets = {
+            'message': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Type a message...'}),
+
+
+        }
+
+class SelectEventForm(forms.Form):
+    event = forms.ModelChoiceField(queryset=Events.objects.none(), empty_label="Choose an Event", widget=forms.Select)
+    
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['event'].queryset = Events.objects.filter(user=user)  # User-created events

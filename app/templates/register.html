@@ -1,47 +1,53 @@
-{% extends 'base.html'%}
+{% extends 'base.html' %}
 
 {% block content %}
-<!-- The main container for the form -->
-<div class="form-content">
-    <h1 class="form-heading">Sign Up</h1>
+<html class="register-page">
+        <!-- The main container for the form -->
+    <div class="register-page">
+        <div class="form-content">
+            <h1 class="form-heading">Sign Up</h1>
 
-    <form method="POST" action="" class="signup-form">
-        {% csrf_token %}
+            <form method="POST" action="" class="signup-form">
+                {% csrf_token %}
 
-        <!-- Username input -->
-        <div class="form-field">
-            <label class="username-label" for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
-            {{ form.username }}
+                <!-- Username input -->
+                <div class="form-field">
+                    <label class="username-label" for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+                    {{ form.username }}
+                </div>
+
+                <!-- Email input -->
+                <div class="form-field">
+                    <label class="username-label" for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+                    {{ form.email }}
+                </div>
+
+                <!-- Password input -->
+                <div class="form-field">
+                    <label class="label-styling" for="{{ form.password1.id_for_label }}">{{ form.password1.label }}</label>
+                    {{ form.password1 }}
+                </div>
+
+                <!-- Confirm password input -->
+                <div class="form-field">
+                    <label class="label-styling" for="{{ form.password2.id_for_label }}">{{ form.password2.label }}</label>
+                    {{ form.password2 }}
+                </div>
+
+                <!-- Submit button -->
+                <div class="form-submit">
+                    <input type="submit" value="Create User" class="submit-btn">
+                </div>
+
+                <!-- Login redirect link -->
+                <div class="login-redirect">
+                    <p class="account-label">Already have an account? <a href="{% url 'login' %}" class="login-link"> Log in</a></p>
+                </div>
+            </form>
         </div>
+    </div>
 
-        <!-- Email input -->
-        <div class="form-field">
-            <label class="username-label" for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
-            {{ form.email }}
-        </div>
-
-        <!-- Password input -->
-        <div class="form-field">
-            <label class="label-styling" for="{{ form.password1.id_for_label }}">{{ form.password1.label }}</label>
-            {{ form.password1 }}
-        </div>
-
-        <!-- Confirm password input -->
-        <div class="form-field">
-            <label class="label-styling" for="{{ form.password2.id_for_label }}">{{ form.password2.label }}</label>
-            {{ form.password2 }}
-        </div>
-
-        <!-- Submit button -->
-        <div class="form-submit">
-            <input type="submit" value="Create User" class="submit-btn">
-        </div>
-
-        <!-- Login redirect link -->
-        <div class="login-redirect">
-            <p class="account-label">Already have an account? <a href="{% url 'login' %}" class="login-link"> Log in</a></p>
-        </div>
-    </form>
-</div>
+</html>
 
 {% endblock %}
+

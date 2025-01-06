@@ -23,6 +23,8 @@ from django.conf.urls.static import static
 
 
 
+
+
 urlpatterns = [
     path("", views.viewHomePage, name="home"),
     path("register/", views.viewRegistrationPage, name="register"),
@@ -37,12 +39,15 @@ urlpatterns = [
     path("dashboard/<str:username>/events/<str:ename>/", views.EventDetail, name="event_detail"),
     path("dashboard/<str:username>/events/<str:ename>/delete/", views.deleteEvent, name="event_delete"),
     path("dashboard/<str:username>/invite/", views.InviteUser, name="invites"),
-    path("dashboard/<str:username>/chat/", views.ChatRoom, name="chats"),
+    path("dashboard/<str:username>/chat/", views.create_chat_room, name="create_chat_room"),  # Event selection for chat
+    path("dashboard/<str:username>/chat/<int:event_id>/", views.chat_room, name="chats"),  # Chat room for specific event
     path("accept-invite/<str:username>/<str:ename>/", views.acceptInvite, name="accept"),
     path("decline-invite/<str:username>/<str:ename>/", views.declineInvite, name="decline"),
+    
+    path('event/<str:username>/<str:ename>/remove_member/', views.remove_member, name='remove_member'),
     path("admin/", admin.site.urls),
-        
 ]
+
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

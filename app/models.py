@@ -31,7 +31,7 @@ class Events(models.Model):
     ##allows the user to specify an address for the event
     address = models.CharField(max_length=500, blank=True, null=True)
 
-
+    
     
 
 

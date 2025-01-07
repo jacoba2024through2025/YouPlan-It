@@ -12,10 +12,12 @@ from django.contrib.auth.models import Group, Permission
 
 def viewHomePage(request):
     if request.user.is_authenticated:
+
+        profile, created = Profile.objects.get_or_create(user=request.user)
         context = {
             'events': Events.events_within_next_14_days(request.user),
             'user': request.user,
-            'profile': Profile.objects.get(user=request.user),
+            'profile': profile,
             
         }
     else:
@@ -28,7 +30,7 @@ def viewHomePage(request):
 
     return render(request, 'base.html', context)
 
-    
+
 
 def viewLoginPage(request):
     if request.user.is_authenticated:
@@ -137,14 +139,17 @@ def EventPage(request, username):
     return render(request, 'eventform1.html', context)
 def SharedEventPage(request, username):
     if request.user.is_authenticated:
-        profile = Profile.objects.get(user=request.user)  
+        profile = Profile.objects.get(user=request.user)
+        shared_events = Events.objects.filter(members=request.user).exclude(user=request.user)  
         context = {
             'myevents': Events.objects.filter(user=request.user),
             'events': Events.objects.filter(members=request.user).exclude(user=request.user),
             'user': request.user,
-            'profile': profile  
+            'profile': profile,
+            'shared_events': shared_events  
         }
     return render(request, 'eventform2.html', context)
+    
 class EventCreateView(View):
     def get(self, request, username):
         form = CreateEventForm()
@@ -157,21 +162,28 @@ class EventCreateView(View):
     def post(self, request, username):
         form = CreateEventForm(request.POST, request.FILES)
         if form.is_valid():
-            
+            event_name = form.cleaned_data['name']
+            # Check for existing events with the same name for the user
+            if Events.objects.filter(name=event_name, user=request.user).exists():
+                messages.error(request, "Event name already used")
+                return render(request, 'eventcreation.html', {
+                    'form': form, 
+                    'myevents': Events.objects.filter(user=request.user),
+                    'profile': Profile.objects.get(user=request.user)
+                })
+
             event = form.save(commit=False)
             event.user = request.user  
             event.save()
-
-            
-
             event.members.add(request.user)  
             return redirect('event_detail', username=request.user.username, ename=event.name)
-        
+
         return render(request, 'eventcreation.html', {
             'form': form, 
             'myevents': Events.objects.filter(user=request.user),
             'profile': Profile.objects.get(user=request.user)
         })
+
 
 class EventUpdateView(View):
     def get(self, request, username, ename):
@@ -242,7 +254,7 @@ def InviteUser(request, username):
                 'invited_profiles': invited_profiles,
                 'shared_events': shared_events
             }
-            return render(request, 'invites.html', context)  # Check for tuple-like behavior
+            return render(request, 'invites.html', context)  
     else:
         form = AddMembersToEventForm(user=request.user)
     
